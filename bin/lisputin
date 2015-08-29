@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'bundler/setup'
+
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+require 'lisputin'
+
+filename = ARGV.first
+
+text = File.read(filename)
+
+ast = Lisputin::Parser.parse(text).to_sexp
+p ast
+# puts Lisputin::Interpreter.new(Lisputin::TOP_SCOPE).eval(ast)

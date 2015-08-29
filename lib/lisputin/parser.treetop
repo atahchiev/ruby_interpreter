@@ -1,0 +1,72 @@
+module Lisputin
+  grammar R5RS
+    rule program
+        (expr whitespace*)* <Program>
+    end
+
+    rule expr
+        whitespace / e:(number / function / symbol / simple_arithmethic / bool / if_else  / args) <Expr> 
+    end
+
+    rule whitespace
+        [ \n]+ 
+    end
+
+    rule number
+        rational / complex / float / integer    
+    end
+
+    rule integer
+        whitespace*  ('+' / '-')? [0-9]+ whitespace* (!float / !complex ) <IntegerLiteral> 
+    end
+
+    rule float
+        whitespace* ('+' / '-')? [0-9]+ '.' [0-9]+  whitespace* <FloatLiteral>
+    end
+
+    rule rational
+        whitespace* nom:(('+' / '-')? [0-9]+) '/' denom:([0-9]+) whitespace* <RationalLiteral>
+    end
+
+    rule complex
+        whitespace* (float / integer)? "+" (float / integer)? "i" whitespace* <ComplexLiteral>
+    end
+
+    rule string
+        whitespace* '"' ([^"\\] / "\\" . )* '"' whitespace* <StringLiteral>
+    end
+
+    rule symbol
+      ('-')? [a-z] [a-z0-9_-]* <Symbol>
+    end
+
+    rule symbols
+        symbol* 
+    end
+
+    rule operator
+       (whitespace* ('+' / '-' / '*' / '/' / '%' / '=' / symbol) whitespace*) <Operator>
+    end
+
+    rule simple_arithmethic
+       '(' operator (whitespace* expr)* whitespace? ')' <SimpleArithmethic>
+    end
+
+    rule bool
+        whitespace* '#' [tf] whitespace* <Bool>
+    end
+
+    rule if_else
+        whitespace*  '(' whitespace* 'if' statement:(simple_arithmethic / bool) if_stat:expr then_stat:expr  whitespace* ')' whitespace* <IfElse> 
+    end
+ 
+    rule args
+        whitespace*  '(' whitespace*  (symbol whitespace?)*  ')' whitespace* <Args> 
+    end
+
+    rule function
+        whitespace*  '(' whitespace* 'define' whitespace* symbol whitespace*  args whitespace* expr  ')' whitespace* <Function>
+    end
+
+  end
+end
